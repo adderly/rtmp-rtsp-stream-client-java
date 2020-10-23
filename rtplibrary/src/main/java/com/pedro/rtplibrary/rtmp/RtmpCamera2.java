@@ -73,6 +73,17 @@ public class RtmpCamera2 extends Camera2Base {
     srsFlvMuxer.setProfileIop(profileIop);
   }
 
+  public int getRemainingCapacity() {
+    return srsFlvMuxer.getRemainingCapacity();
+  }
+
+  /**
+   * @param congestedThreshold normalized valiu ( 0.0 - 1.0 )
+   * */
+  public boolean getIsCongested(float congestedThreshold) {
+    return srsFlvMuxer.getIsCongested(congestedThreshold);
+  }
+
   @Override
   public void resizeCache(int newSize) throws RuntimeException {
     srsFlvMuxer.resizeFlvTagCache(newSize);

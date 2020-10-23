@@ -150,6 +150,20 @@ public class SrsFlvMuxer {
     return mFlvVideoTagCache.size() + mFlvAudioTagCache.size();
   }
 
+  public int getRemainingCapacity() {
+    return mFlvVideoTagCache.remainingCapacity() + mFlvAudioTagCache.remainingCapacity();
+  }
+
+  public boolean getIsCongested(float congestedThreshold) {
+    int rm = getRemainingCapacity();
+    int cacheSize = getFlvTagCacheSize();
+
+    if (rm <= 0 || cacheSize <= 0 ) return false;
+    float ratio = rm / cacheSize;
+
+    return ratio > congestedThreshold ;
+  }
+
   public long getSentAudioFrames() {
     return mAudioFramesSent;
   }
