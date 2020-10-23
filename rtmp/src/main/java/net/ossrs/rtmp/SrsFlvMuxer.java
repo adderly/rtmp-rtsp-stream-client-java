@@ -157,9 +157,10 @@ public class SrsFlvMuxer {
   public boolean getIsCongested(float congestedThreshold) {
     int rm = getRemainingCapacity();
     int cacheSize = getFlvTagCacheSize();
+    int size =  rm + cacheSize;
 
     if (rm <= 0 || cacheSize <= 0 ) return false;
-    float ratio = rm / cacheSize;
+    float ratio =  rm / size;
 
     return ratio > congestedThreshold ;
   }
