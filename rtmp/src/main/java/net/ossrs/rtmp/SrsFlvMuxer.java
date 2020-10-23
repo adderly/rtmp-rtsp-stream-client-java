@@ -160,9 +160,9 @@ public class SrsFlvMuxer {
     int size =  rm + cacheSize;
 
     if (rm <= 0 || cacheSize <= 0 ) return false;
-    float ratio =  rm / size;
+    double ratio =  rm / (double)size;
 
-    return ratio > congestedThreshold ;
+    return ratio < congestedThreshold ;
   }
 
   public long getSentAudioFrames() {
