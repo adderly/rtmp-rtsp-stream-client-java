@@ -1,6 +1,7 @@
 package com.pedro.encoder.input.video;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
@@ -522,6 +523,17 @@ public class Camera2ApiManager extends CameraDevice.StateCallback {
     }
   }
 
+  @RequiresApi(api = Build.VERSION_CODES.M)
+  private boolean getIsModifiable() {
+    return cameraCaptureSession.isReprocessable();
+  }
+
+  public boolean canApplyChangesToSession() {
+    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+      return getIsModifiable();
+    else return true;
+  }
+
   public float getMaxZoom() {
     CameraCharacteristics characteristics = getCameraCharacteristics();
     if (characteristics == null) return 1;
@@ -541,6 +553,11 @@ public class Camera2ApiManager extends CameraDevice.StateCallback {
       if (level <= 0f) level = 0.01f;
       else if (level > maxZoom) level = maxZoom;
 
+      if (!canApplyChangesToSession()) {
+        Log.d(TAG, "Can't apply changes to the camera captureSession");
+        return;
+      }
+
       CameraCharacteristics characteristics = getCameraCharacteristics();
       if (characteristics == null) return;
       Rect rect = characteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE);
@@ -558,6 +575,8 @@ public class Camera2ApiManager extends CameraDevice.StateCallback {
           faceDetectionEnabled ? cb : null, null);
     } catch (CameraAccessException e) {
       Log.e(TAG, "Error", e);
+    } catch (IllegalStateException e) {
+      Log.e(TAG, "Failed to setZoom", e);
     }
   }
 
