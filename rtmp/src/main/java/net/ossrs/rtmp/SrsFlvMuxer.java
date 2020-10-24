@@ -159,10 +159,13 @@ public class SrsFlvMuxer {
     int cacheSize = getFlvTagCacheSize();
     int size =  rm + cacheSize;
 
-    if (rm <= 0 || cacheSize <= 0 ) return false;
-    double ratio =  rm / (double)size;
+    if (rm <= 0) return true;
 
-    return ratio < congestedThreshold ;
+    assert (cacheSize <= 0);
+
+    boolean congested =  (float) rm / (float)size < congestedThreshold;
+
+    return congested;
   }
 
   public long getSentAudioFrames() {
